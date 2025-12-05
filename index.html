@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Mental Health Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script>
+        // Backup CDN loader
+        function loadEthersBackup() {
+            console.log('Loading ethers from backup CDN...');
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js';
+            script.onload = function() {
+                console.log('Ethers.js loaded from backup CDN');
+                // Re-initialize app after ethers loads
+                window.initializeApp();
+            };
+            script.onerror = function() {
+                console.error('Failed to load ethers from backup CDN');
+                // Try jsdelivr as final fallback
+                const script2 = document.createElement('script');
+                script2.src = 'https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js';
+                script2.onload = function() {
+                    console.log('Ethers.js loaded from jsdelivr CDN');
+                    // Re-initialize app after ethers loads
+                    window.initializeApp();
+                };
+                script2.onerror = function() {
+                    console.error('All CDN sources failed to load ethers.js');
+                    alert('Failed to load required Web3 library. Please check your internet connection and refresh the page.');
+                };
+                document.head.appendChild(script2);
+            };
+            document.head.appendChild(script);
+        }
+
+        // Wait for ethers to load before initializing app
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (typeof ethers !== 'undefined') {
+                    console.log('Ethers.js loaded successfully');
+                    // Re-initialize app after ethers loads
+                    if (window.initializeApp) {
+                        window.initializeApp();
+                    }
+                } else {
+                    console.error('Ethers.js failed to load from primary CDN');
+                    loadEthersBackup();
+                }
+            }, 500);
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧠 Anonymous Mental Health Platform</h1>
+            <p>Secure, private mental health support using blockchain technology</p>
+            <div class="wallet-status">
+                <button id="connectWallet" class="btn-primary">Connect Wallet</button>
+                <div id="loadingStatus" class="loading-indicator" style="display: none;">
+                    <span>Loading Web3...</span>
+                </div>
+                <div id="accountInfo" style="display: none;">
+                    <span id="accountAddress"></span>
+                    <span id="networkInfo"></span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- Registration Section -->
+            <section id="registrationSection" class="card">
+                <h2>🔐 Patient Registration</h2>
+                <p>Register anonymously with encrypted mental health indicators</p>
+
+                <div class="form-group">
+                    <label for="anxietyLevel">Anxiety Level (0-10):</label>
+                    <input type="range" id="anxietyLevel" min="0" max="10" value="5">
+                    <span id="anxietyValue">5</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="depressionLevel">Depression Level (0-10):</label>
+                    <input type="range" id="depressionLevel" min="0" max="10" value="5">
+                    <span id="depressionValue">5</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="stressLevel">Stress Level (0-10):</label>
+                    <input type="range" id="stressLevel" min="0" max="10" value="5">
+                    <span id="stressValue">5</span>
+                </div>
+
+                <button id="registerBtn" class="btn-primary">Register as Patient</button>
+                <div id="registrationStatus" class="status-message"></div>
+            </section>
+
+            <!-- Session Booking Section -->
+            <section id="sessionSection" class="card" style="display: none;">
+                <h2>🗓️ Book Counseling Session</h2>
+
+                <div class="session-availability">
+                    <h3>Session Availability</h3>
+                    <div id="availabilityInfo"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="sessionType">Session Type:</label>
+                    <select id="sessionType">
+                        <option value="1">Anxiety Support</option>
+                        <option value="2">Depression Support</option>
+                        <option value="3">Stress Management</option>
+                        <option value="4">General Counseling</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="severityLevel">Severity Level (1-10):</label>
+                    <input type="range" id="severityLevel" min="1" max="10" value="5">
+                    <span id="severityValue">5</span>
+                </div>
+
+                <button id="startSessionBtn" class="btn-primary">Start Session</button>
+                <div id="sessionStatus" class="status-message"></div>
+            </section>
+
+            <!-- Active Session Section -->
+            <section id="activeSessionSection" class="card" style="display: none;">
+                <h2>🎯 Active Session</h2>
+                <div id="activeSessionInfo"></div>
+
+                <div class="form-group">
+                    <label for="improvementScore">Session Improvement Score (0-10):</label>
+                    <input type="range" id="improvementScore" min="0" max="10" value="5">
+                    <span id="improvementValue">5</span>
+                </div>
+
+                <button id="completeSessionBtn" class="btn-success">Complete Session</button>
+                <div id="completionStatus" class="status-message"></div>
+            </section>
+
+            <!-- Mental Health Update Section -->
+            <section id="updateSection" class="card" style="display: none;">
+                <h2>📊 Update Mental Health Levels</h2>
+
+                <div class="form-group">
+                    <label for="newAnxietyLevel">New Anxiety Level (0-10):</label>
+                    <input type="range" id="newAnxietyLevel" min="0" max="10" value="5">
+                    <span id="newAnxietyValue">5</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="newDepressionLevel">New Depression Level (0-10):</label>
+                    <input type="range" id="newDepressionLevel" min="0" max="10" value="5">
+                    <span id="newDepressionValue">5</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="newStressLevel">New Stress Level (0-10):</label>
+                    <input type="range" id="newStressLevel" min="0" max="10" value="5">
+                    <span id="newStressValue">5</span>
+                </div>
+
+                <button id="updateLevelsBtn" class="btn-primary">Update Levels</button>
+                <div id="updateStatus" class="status-message"></div>
+            </section>
+
+            <!-- Patient Dashboard -->
+            <section id="dashboardSection" class="card" style="display: none;">
+                <h2>📈 Patient Dashboard</h2>
+                <div id="dashboardInfo"></div>
+
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <h3>Total Sessions</h3>
+                        <span id="totalSessions">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Registration Date</h3>
+                        <span id="registrationDate">-</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Therapy Plan</h3>
+                        <span id="therapyPlanStatus">None</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Counselor Section -->
+            <section id="counselorSection" class="card" style="display: none;">
+                <h2>👨‍⚕️ Counselor Dashboard</h2>
+
+                <div class="form-group">
+                    <label for="patientAddress">Patient Address:</label>
+                    <input type="text" id="patientAddress" placeholder="0x...">
+                </div>
+
+                <div class="form-group">
+                    <label for="recommendedSessions">Recommended Sessions (1-20):</label>
+                    <input type="number" id="recommendedSessions" min="1" max="20" value="5">
+                </div>
+
+                <div class="form-group">
+                    <label for="priorityLevel">Priority Level:</label>
+                    <select id="priorityLevel">
+                        <option value="1">Low</option>
+                        <option value="2">Medium</option>
+                        <option value="3">High</option>
+                        <option value="4">Urgent</option>
+                    </select>
+                </div>
+
+                <button id="createPlanBtn" class="btn-primary">Create Therapy Plan</button>
+                <div id="planStatus" class="status-message"></div>
+            </section>
+
+            <!-- System Stats -->
+            <section id="statsSection" class="card">
+                <h2>📊 System Statistics</h2>
+                <div id="systemStats"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
