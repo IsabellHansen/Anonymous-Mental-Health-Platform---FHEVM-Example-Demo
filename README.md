@@ -7,7 +7,7 @@ A comprehensive, standalone FHEVM example repository demonstrating encrypted hea
 
 Live Demo: https://anonymous-mental-health-platform-fh.vercel.app/
 
-Video Demo: https://streamable.com/i8m93w  AnonymousMentalHealth.mp4
+Video Demo: https://youtu.be/KicDJZCKllo  AnonymousMentalHealth.mp4
 
 ---
 

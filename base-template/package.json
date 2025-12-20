@@ -1,0 +1,42 @@
+{
+  "name": "fhevm-hardhat-template",
+  "version": "1.0.0",
+  "description": "Base Hardhat template for FHEVM smart contract development",
+  "main": "index.js",
+  "scripts": {
+    "test": "hardhat test",
+    "compile": "hardhat compile",
+    "node": "hardhat node",
+    "deploy": "hardhat run scripts/deploy.ts",
+    "clean": "hardhat clean"
+  },
+  "keywords": [
+    "fhevm",
+    "fhe",
+    "homomorphic-encryption",
+    "privacy",
+    "blockchain",
+    "hardhat",
+    "ethereum",
+    "solidity"
+  ],
+  "author": "FHEVM Developer",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@typechain/hardhat": "^9.1.0",
+    "@types/chai": "^4.3.11",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.10.6",
+    "chai": "^4.3.10",
+    "dotenv": "^16.3.1",
+    "hardhat": "^2.19.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@fhevm/contracts": "^0.5.0",
+    "@openzeppelin/contracts": "^5.0.1",
+    "ethers": "^6.9.2"
+  }
+}
